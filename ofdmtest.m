@@ -7,7 +7,7 @@ close all
 % pulse at start for sync and freq offset correction
 N = 8192;  %number of samples for sync pulse
 pream = ones(1,N);
-fs = 300e3;  % sample rate of ofdm signal , bw = 100khz 
+fs = 100e3;  % sample rate of ofdm signal , bw = 100khz 
 
 % gap between sync pulse and xp data vector 
 guardN = 512;
@@ -19,7 +19,7 @@ tdvec = zeros(1,tdsamples);
 
 
 % number of char for text message 
-Nchar = 1024;  % make power of 2,  number of char for text
+Nchar = 256;  % make power of 2,  number of char for text
 bits = Nchar * 8;
 Nfft = bits + 1024;  % bits plus guard freq bins, gbins 512 + 512 
 
@@ -99,7 +99,7 @@ datafile = [ real(xt).'  imag(xt).' ];  %  Nx2
 
 
 % write iq file as wav file , use file in gnuradio flow blocks: 
- audiowrite('c:\SDR_Work\ofdmtest300khzIQ1024Char.wav',datafile,fs,'BitsPerSample',16);
+ audiowrite('c:\SDR_Work\ofdmtest100khzIQ256Char.wav',datafile,fs,'BitsPerSample',16);
 
 
 % % make a sim iq rx file
@@ -117,104 +117,6 @@ datafile = [ real(xt).'  imag(xt).' ];  %  Nx2
 % 
 % audiowrite('c:\SDR_Work\ofdmSimRX100khz256Char.wav',datafile,fs,'BitsPerSample',16);
 % 
-
-
-
-
-% sample rate 50nsec  of ARB .wv file
-clock = fs;
-rg = 1/clock;
-
-
-clocka = num2str(clock);
-clock = ['{CLOCK:' clocka '}'];
-clock2 = ['{CLOCK MARKER:' clocka '}'];
-
-
-
-
-
-data = xt;
-
-
-
-
-scale = 2^15 - 1;
-data = scale * data;
-data = round(data);
-data = int16(data);
-
-
-
-iqlength = length(data);
-
-ippvector = data;
-
-clear data
-
-
-
-
-% make file for R&S format  .wv  file  
-
-
-
-[filename, pathname] = uiputfile( '.wv', 'Save .wv  File  As:  ','D:\New folder\video_spectrum');
-
-x = [pathname filename];
-
-fid = fopen (x, 'w', 'l');
-
-fprintf(fid,'{TYPE: SMU-WV,0}');
-fprintf(fid,clock);
-fprintf(fid,clock2);
-fprintf(fid,'{LEVEL OFFS:0,0}');
-
-samples = ['{SAMPLES:' num2str(iqlength) '}'];
-% fprintf(fid,'{SAMPLES:600}');
-fprintf(fid,samples);
-
-
-
-
-
-% compute length for rs .wv file
-%  length  = number_of_IQpairs * 4  + 1  
-iqlength = iqlength*4 + 1;
-iqlength = num2str(iqlength);
-iqlength = ['{WAVEFORM-' iqlength ': #'];
-fprintf(fid,iqlength);
-
-
-    
-    
-   
-    ippvector = [ real(ippvector) ; imag(ippvector)];
-    ippvector = reshape(ippvector, 1 , []);
-    
-    
-    
-    
-    
-    
-    
-    
-    fwrite(fid, ippvector, 'int16' , 'l' );
-    
-
-
-% close file
-
-fprintf(fid,'}');
-fclose (fid);
-
-
-
-
-
-
-
-
 
 
 
