@@ -17,11 +17,11 @@ xstring = [PATHNAME FILENAME];
 Tswave = 1/fswav;
 
 % tx bandwidth
-fs = 300e3;  % final sample rate to convert IQ file to 
+fs = 100e3;  % final sample rate to convert IQ file to 
 
 Nguard = 512;   % time between pulse and preamble fft data
 
-Nchar = 1024;  % make power of 2
+Nchar = 256;  % make power of 2
 bits = Nchar * 8;
 N2 = bits/2;
 Nfft = bits + 1024;  % bits bins plus 2 512 guard bins 
